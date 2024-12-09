@@ -47,7 +47,7 @@ fi
 echo ""
 echo "----------------------------------------------------"
 echo " &name; has been installed."
-echo " Copyright 2024, Limetechnology, Inc"
+echo " Copyright 2024, Lime Technology, Inc"
 echo " Version: &version;"
 echo "----------------------------------------------------"
 echo ""
