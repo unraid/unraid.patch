@@ -58,8 +58,11 @@ function readJsonFile($filename) {
 }
 
 function logger($msg) {
+  global $option;
+
   echo $msg;
-  exec("logger ".escapeshellarg($msg));
+  if ( $option !== "boot" )
+    exec("logger ".escapeshellarg($msg));
 }
 
 
