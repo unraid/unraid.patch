@@ -1,0 +1,69 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "unraid.patch">
+<!ENTITY author    "Lime Technology">
+<!ENTITY version   "2024.12.05">
+<!ENTITY md5       "8fd734ad015fe624ee2e499ec950d96d">
+<!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
+<!ENTITY github    "unraid/unraid.patch">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/&github;/main/plugins/&name;.plg">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" icon="asterisk" launch="Tools/unraidPatch">
+
+<CHANGES>
+###2024.11.24
+
+</CHANGES>
+
+<FILE Run="/bin/bash">
+<INLINE>
+# Remove old 'source' files
+rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null &#124; grep -v '&version;')
+</INLINE>
+</FILE>
+
+<!--
+The 'source' file.
+-->
+<FILE Name="/boot/config/plugins/&name;/&name;-&version;-x86_64-1.txz" Run="upgradepkg --install-new">
+<URL>https://raw.github.com/&github;/main/archive/&name;-&version;-x86_64-1.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<!--
+The 'post-install' script
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+/usr/local/emhttp/plugins/unraid.patch/scripts/patch.php install
+
+ln -s /usr/local/emhttp/plugins/unraid.patch/scripts/backgroundCheck.php /etc/cron.weekly/backgroundCheck.php 
+
+if [ ! -f /boot/config/plugins/unraid.patch/accepted ]; then
+  /usr/local/emhttp/plugins/unraid.patch/scripts/backgroundCheck.php
+fi
+
+echo ""
+echo "----------------------------------------------------"
+echo " &name; has been installed."
+echo " Copyright 2024, Limetechnology, Inc"
+echo " Version: &version;"
+echo "----------------------------------------------------"
+echo ""
+</INLINE>
+</FILE>
+
+<!--
+The 'remove' script.
+-->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+echo NOTE: REMOVING THIS PLUGIN WILL ALSO NOT RE-INSTALL ANY PRIORITY SECURITY UPDATES DURING BOOT
+removepkg &name;-&version;-x86_64-1
+rm -rf &plugdir;
+rm -rf /usr/local/emhttp/plugins/unraid.patch/
+rm -rf /boot/config/plugins/unraid.patch/
+</INLINE>
+</FILE> 
+</PLUGIN>

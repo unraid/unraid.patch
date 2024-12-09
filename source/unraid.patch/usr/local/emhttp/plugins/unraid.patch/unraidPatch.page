@@ -1,0 +1,131 @@
+Menu="About"
+Title="Unraid Patch"
+---
+<?
+/* Copyright 2024, Lime Technology
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2,
+ * as published by the Free Software Foundation.
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ */
+
+require_once "/usr/local/emhttp/plugins/unraid.patch/include/paths.php";
+$unraidVersion = parse_ini_file($paths['version']);
+
+$changes = '/boot/changes.txt';
+if (file_exists($changes)) {
+  exec("head -n4 $changes",$rows);
+  foreach ($rows as $row) {
+    $i = stripos($row,'version');
+    if ($i !== false) {
+      [$downgradeversion,$date] = explode(' ',trim(substr($row,$i+7)));
+      break;
+    }
+  }
+}
+
+if ( ($_COOKIE['patchOverrideNew'] ?? false) && is_file($paths['override']) ) {
+  file_put_contents($paths['override'],"https://releases.unraid.net/dl/preview/{$_COOKIE['patchOverrideNew']}/patch/patches.json");
+  @unlink($paths['overridePatch']);
+  setcookie("patchOverrideNew","");
+}
+?>
+
+<script>
+function myAlert(description,textdescription,textimage,imagesize, outsideClick, showCancel, showConfirm, alertType) {
+  if ( !outsideClick ) outsideClick = false;
+  if ( !showCancel )   showCancel = false;
+  if ( !showConfirm )  showConfirm = false;
+  if ( imagesize == "" ) { imagesize = "80x80"; }
+   
+  swal({
+    title: description,
+    text: textdescription,
+    imageUrl: textimage,
+    imageSize: imagesize,
+    allowOutsideClick: outsideClick,
+    showConfirmButton: showConfirm,
+    showCancelButton: showCancel,
+    type: alertType,
+    html: true
+  });
+}
+
+function reload() {
+  window.location.reload();
+}
+
+function install() {
+  openBox("/plugins/unraid.patch/scripts/install.sh","Install Patch",550,900,true,"reload");
+}
+
+$(function() {
+  caPluginUpdateCheck("unraid.patch.plg",{
+      noDismiss:true,
+      name:"Unraid Patch",
+      debug:false,
+      priority:true
+  });
+
+  <?if ( ! file_exists("/boot/config/plugins/unraid.patch/accepted") ) :?>
+    swal({
+      title: "_(Unraid Patch)_",
+      text: '_(This plugin will automatically install any patches issued for Unraid.  To allow, you must click accept.)_',
+      html: true,
+      type: 'warning',
+      showCancelButton: true,
+      showConfirmButton: true,
+      cancelButtonText: "_(Cancel)_",
+      confirmButtonText: "_(Accept)_"
+      }, function (isConfirm) {
+      if ( isConfirm ) {
+        $.post("<?=$paths['exec']?>",{action:"accepted"},function(data) {
+          window.location.reload();
+        });
+      } else {
+          history.back();
+      }
+    }); 
+  <? else: ?>
+  myAlert("_(Checking For Patches)_");
+  $.post("<?=$paths['exec']?>",{action:"check"},function(data) {
+    swal.close();
+    $("#changelogold,#changelognew,#changelogdowngrade,#errorText").html(data);
+  });
+  <?endif;?>
+});
+
+function overrideOS() {
+  $.cookie("patchOverrideNew",$("#OS").val());
+  window.location.reload();
+}
+</script>
+<? if (is_file($paths['override']) ): ?>
+  <input type='text' id='OS' placeholder='Override OS version' onchange='overrideOS();'></input><br><br>
+<? endif;?>
+<span style='display:none;' id='displayNew'>
+<span style='font-size:2rem;'>_(These patches will be automatically installed at the next boot of your server.  You can also click the Install Now button to install it immediately)_</span>
+<span id='changelognew'></span>
+<input id='installButton' type='button' value='_(Install Now)_' onclick='install();'></input><input type='button' value='_(done)_' onclick='done();'></input>
+</span>
+<span style='display:none' id='displayInstalled'>
+<span id='disp1' style='font-size:2rem;'>_(No new patches found!  The following patches are already installed and will be reinstalled automatically when your server boots)_</span>
+<span id='disp2' style='display:none; font-size:2rem;'>_(No new patches found!)_</span>
+<span id='changelogold'></span>
+<input type='button' value='_(done)_' onclick='done();'></input>
+</span>
+<span style='display:none' id='displayNone'>
+<span id='disp3' style='font-size:2rem;'>_(No patches found for Unraid OS version)_ <?=$unraidVersion['version']?><br><br></span>
+<span id='disp4' style='display:none; font-size:2rem;'>_(No patches found.  Note that the Unraid OS version will change at boot time to)_ <?=$downgradeversion?><br><br></span>
+<span id='disp5' style='display:none; font-size:2rem;'>_(Note that the Unraid OS version will change at boot time to)_ <?=$downgradeversion?><br><br>_(The following updates will be automatically installed)_<br><br></span>
+<span id='changelogdowngrade'></span>
+<input type='button' value='_(done)_' onclick='done();'></input>
+</span>
+<span style='display:none;' id='displayError'>
+  <span style='font-size:2rem;'>_(An error occurred downloading updated patch files)_</span><br><br>
+  <code id='errorText'></code><br><br>
+  <input type='button' value='_(Try Again)_' onclick='window.location.reload();'></input><input type='button' value='_(Done)_' onclick='done();'></input>
+</span>
