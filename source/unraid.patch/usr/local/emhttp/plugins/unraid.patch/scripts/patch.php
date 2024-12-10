@@ -62,7 +62,7 @@ function logger($msg) {
 
   echo $msg;
   if ( $option !== "boot" )
-    exec("logger ".escapeshellarg($msg));
+    exec("logger ".str_replace("\n","",escapeshellarg($msg)));
 }
 
 
@@ -117,7 +117,8 @@ function install() {
       continue;
     }
 
-    logger("Executing $filename...\n\n");
+    logger("Executing $filename...\n");
+    logger("\n");
     copy($filename,$paths['tmp']."/script");
     if ( md5_file($paths['tmp']."/script") !== $script['md5'] ) {
       logger("MD5 verification failed.  Aborting\n");
@@ -140,7 +141,8 @@ function install() {
       continue;
     }
 
-    logger("Installing $filename...\n\n");
+    logger("Installing $filename...\n");
+    logger("\n");
     if ( md5_file($filename) !== $script['md5'] ) {
       logger("MD5 verification failed.  Aborting\n");
       exit(1);
@@ -162,7 +164,8 @@ function install() {
       continue;
     }
 
-    logger("Executing $filename...\n\n");
+    logger("Executing $filename...\n");
+    logger("\n");
     copy($filename,$paths['tmp']."/script");
     if ( md5_file($paths['tmp']."/script") !== $script['md5'] ) {
       logger("MD5 verification failed.  Aborting\n");
@@ -174,10 +177,12 @@ function install() {
     if ( ! $exitCode ) {
       $installedUpdates[basename($script['url'])] = true;
     } else {
-      logger("\n\nFailed to install script ".basename($script['url'])."   Aborting\n");
+      logger("\n");
+      logger("Failed to install script ".basename($script['url'])."   Aborting\n");
       exit(1);
     }
   }
+  logger("Patches Installed\n");
   writeJsonFile($paths['installedUpdates'],$installedUpdates);
 }
 
@@ -193,7 +198,7 @@ function check() {
   logger("Checking for patches $patchesAvailable\n");
   $updates = download_json($patchesAvailable);
   if (! $updates || empty($updates) ) {
-    logger("No patches found");
+    logger("No patches found\n");
     return;
   }
 
@@ -221,14 +226,14 @@ function check() {
     logger("Downloading {$patches['url']}...");
     if ( is_file("$newPath/".basename($patches['url']))) {
       if (md5_file("$newPath/".basename($patches['url'])) == $patches['md5']) {
-        logger("\nPatch file already exists $newPath".basename($patches['url'])."   Skipping");
+        logger("\nPatch file already exists $newPath".basename($patches['url'])."   Skipping\n");
         continue;
       }
     }
 
     download_url($patches['url'],"$newPath/".basename($patches['url']));
     if (md5_file("$newPath/".basename($patches['url'])) !== $patches['md5']) {
-      logger("MD5 verification failed!");
+      logger("MD5 verification failed!\n");
       $downloadFailed = true;
       @unlink("$newPath/".basename($patches['file']));
       break;
@@ -242,14 +247,14 @@ function check() {
     logger("Downloading {$scripts['url']}...");
     if ( is_file("$newPath/".basename($scripts['url']))) {
       if (md5_file("$newPath/".basename($scripts['url'])) == $scripts['md5']) {
-        logger("Script file already exists.  Skipping");
+        logger("Script file already exists.  Skipping\n");
         continue;
       }
     }
 
     download_url($scripts['url'],"$newPath/".basename($scripts['url']));
     if (md5_file("$newPath/".basename($scripts['url'])) !== $scripts['md5']) {
-      logger("MD5 verification failed!");
+      logger("MD5 verification failed!\n");
       $downloadFailed = true;
       @unlink("$newPath/".basename($scripts['file']));
       break;
@@ -270,7 +275,7 @@ function check() {
 
     download_url($scripts['url'],"$newPath/".basename($scripts['url']));
     if (md5_file("$newPath/".basename($scripts['url'])) !== $scripts['md5']) {
-      logger("MD5 verification failed!");
+      logger("MD5 verification failed!\n");
       $downloadFailed = true;
       @unlink("$newPath/".basename($scripts['file']));
       break;
@@ -278,7 +283,7 @@ function check() {
   }
   if ( $downloadFailed ) {
     logger("\n");
-    logger("Downloads aborted.");
+    logger("Downloads aborted.\n");
     // only delete files that haven't already been installed
     $alreadyInstalled = glob("{$paths['flash']}/$option/");
     foreach ( $alreadyInstalled as $file) {
@@ -289,6 +294,7 @@ function check() {
     exit(1);
   } else {
     writeJsonFile("{$paths['flash']}/$option/patches.json",$updates);
+    logger("\n");
   }
 }
 

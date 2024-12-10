@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "unraid.patch">
 <!ENTITY author    "Lime Technology">
-<!ENTITY version   "2024.12.09a">
-<!ENTITY md5       "c4031e76b17009cc3fba8fe2b7d4f895">
+<!ENTITY version   "2024.12.10">
+<!ENTITY md5       "a1e2fcffb4159a8e8dc5b940badc4304">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "unraid/unraid.patch">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/&github;/main/plugins/&name;.plg">
@@ -12,7 +12,8 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" icon="asterisk" launch="Tools/unraidPatch">
 
 <CHANGES>
-###2024.11.24
+###2024.12.10
+- Initial Release
 
 </CHANGES>
 
