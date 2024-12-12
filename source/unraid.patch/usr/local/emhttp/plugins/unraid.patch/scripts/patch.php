@@ -195,7 +195,7 @@ function check() {
     $patchesAvailable = trim(file_get_contents($paths['override']));
   }
 
-  logger("Checking for patches $patchesAvailable\n");
+  logger("Checking for patches for OS version $option\n");
   $updates = download_json($patchesAvailable);
   if (! $updates || empty($updates) ) {
     logger("No patches found\n");
