@@ -223,7 +223,7 @@ function check() {
       logger("Skipping {$patches['url']} -- Already installed\n");
       continue;
     }
-    logger("Downloading {$patches['url']}...");
+    logger("Downloading patches for $option...");
     if ( is_file("$newPath/".basename($patches['url']))) {
       if (md5_file("$newPath/".basename($patches['url'])) == $patches['md5']) {
         logger("\nPatch file already exists $newPath".basename($patches['url'])."   Skipping\n");
