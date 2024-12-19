@@ -220,13 +220,13 @@ function check() {
   exec("mkdir -p ".escapeshellarg($newPath));
   foreach ($updates['patches'] ?? [] as $patches) {
     if ( isset($installedUpdates[basename($patches['url'])]) ) {
-      logger("Skipping {$patches['url']} -- Already installed\n");
+      logger("Skipping ".basename($patches['url'])."-- Already installed\n");
       continue;
     }
     logger("Downloading patches for $option...");
     if ( is_file("$newPath/".basename($patches['url']))) {
       if (md5_file("$newPath/".basename($patches['url'])) == $patches['md5']) {
-        logger("\nPatch file already exists $newPath".basename($patches['url'])."   Skipping\n");
+        logger("\nPatch file ".basename($patches['url'])." already exists.   Skipping\n");
         continue;
       }
     }
@@ -241,7 +241,7 @@ function check() {
   }
   foreach ($updates['scripts'] ?? [] as $scripts) {
     if ( isset($installedUpdates[basename($scripts['url'])]) ) {
-      logger("Skipping {$scripts['url']} -- Already installed\n");
+      logger("Skipping ".basename($scripts['url'])." -- Already installed\n");
       continue;
     }
     logger("Downloading {$scripts['url']}...");
