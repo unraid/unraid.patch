@@ -30,7 +30,6 @@ if (file_exists($changes)) {
 if ( ($_COOKIE['patchOverrideNew'] ?? false) && is_file($paths['override']) ) {
   file_put_contents($paths['override'],"https://releases.unraid.net/dl/preview/{$_COOKIE['patchOverrideNew']}/patch/patches.json");
   @unlink($paths['overridePatch']);
-  setcookie("patchOverrideNew","");
 }
 ?>
 
@@ -70,6 +69,7 @@ $(function() {
       priority:true
   });
 
+  $.cookie("patchOverrideNew","");
   <?if ( ! file_exists("/boot/config/plugins/unraid.patch/accepted") ) :?>
     swal({
       title: "_(Unraid Patch)_",
