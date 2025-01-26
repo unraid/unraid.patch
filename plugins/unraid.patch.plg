@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "unraid.patch">
 <!ENTITY author    "Lime Technology">
-<!ENTITY version   "2024.12.24">
-<!ENTITY md5       "0fef7a788c7e2ad2b7511e246f8546d9">
+<!ENTITY version   "2025.01.26">
+<!ENTITY md5       "6d2c1bb42e5e2d352a6faf2d457f3ca1">
 <!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
 <!ENTITY github    "unraid/unraid.patch">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/&github;/main/plugins/&name;.plg">
@@ -12,6 +12,9 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" icon="asterisk" launch="Tools/unraidPatch">
 
 <CHANGES>
+###2025.01.26
+- Fixed: Background update checks could return a false positive notification
+
 ###2024.12.18
 - Initial Release
 
@@ -48,7 +51,7 @@ fi
 echo ""
 echo "----------------------------------------------------"
 echo " &name; has been installed."
-echo " Copyright 2024, Lime Technology, Inc"
+echo " Copyright 2024-2025, Lime Technology, Inc"
 echo " Version: &version;"
 echo "----------------------------------------------------"
 echo ""
