@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm -rf "/tmp/GitHub/unraid.patch/source/unraid.patch/usr/local/emhttp/plugins/unraid.patch/"
 mkdir -p "/tmp/GitHub/unraid.patch/source/unraid.patch/usr/local/emhttp/plugins/unraid.patch/"
 
 cp /usr/local/emhttp/plugins/unraid.patch/* /tmp/GitHub/unraid.patch/source/unraid.patch/usr/local/emhttp/plugins/unraid.patch -R -v -p
