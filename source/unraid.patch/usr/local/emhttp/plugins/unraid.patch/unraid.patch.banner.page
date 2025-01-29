@@ -1,0 +1,26 @@
+Menu='Buttons'
+Link='nav-user'
+---
+<?
+
+/* Copyright 2024, Lime Technology
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License version 2,
+ * as published by the Free Software Foundation.
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ */
+
+require_once "/usr/local/emhttp/plugins/unraid.patch/include/paths.php";
+
+$unraidPatchShowBanner = is_file($paths['bannerNotify']) && (basename(parse_url($_SERVER['REQUEST_URI'])['path']) !== "unraidPatch");
+?>
+
+<script>
+<? if ( $unraidPatchShowBanner ) :?>
+  addBannerWarning("_(Critical OS Patches Available)_ <a href='/Tools/unraidPatch' target='_same'>Install them here</a>");
+<?endif;?>
+  
+</script>
