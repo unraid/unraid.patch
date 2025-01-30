@@ -16,9 +16,15 @@ Link='nav-user'
 require_once "/usr/local/emhttp/plugins/unraid.patch/include/paths.php";
 
 $unraidPatchShowBanner = is_file($paths['bannerNotify']) && (basename(parse_url($_SERVER['REQUEST_URI'])['path']) !== "unraidPatch");
+$unraidPatchRebootBanner = is_file($paths['rebootNotice']);
+if ( $unraidPatchRebootBanner )
+  $unraidPatchShowBanner = false;
 ?>
 
 <script>
+<? if ( $unraidPatchRebootBanner ) :?>
+  addRebootNotice("You must reboot your server to install the patches");
+<?endif;?>
 <? if ( $unraidPatchShowBanner ) :?>
   addBannerWarning("_(Critical OS Patches Available)_ <a href='/Tools/unraidPatch' target='_same'>Install them here</a>");
 <?endif;?>

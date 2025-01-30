@@ -87,7 +87,7 @@ switch($action) {
 }
 
 function install() {
-  global $paths, $unraidVersion;
+  global $paths, $unraidVersion, $option;
 
   if ( ! file_exists($paths['accepted']) ) {
     logger("Installation of Unraid patches not accepted.  You must go to Tools - Unraid Patch and accept the disclaimer\n");
@@ -154,8 +154,11 @@ function install() {
     if ( ! $exitCode ) {
       $installedUpdates[basename($script['url'])] = true;
     } else {
-      logger("\n\nFailed to install patch ".basename($script['url'])."   Aborting\n");
-      logger("\n\n<b><font color='crimson'>The failure to install is likely due to a 3rd party plugin modifying a system file.  The patches have been partially installed.  A reboot will be necessary to fully install the patches</font></b>\n",true);
+      if ( $option !== "boot" )
+        touch($paths['rebootNotice']);
+      
+        logger("\n\nFailed to install patch ".basename($script['url'])."   Aborting\n");
+      logger("\n\n<b><font color='crimson'>A patch failed to install, it is likely that a system file was already modified by a different plugin. Please reboot the system so the patch will be applied before other plugins are installed.</font></b>\n",true);
       exit(1);
     }
   }
@@ -185,6 +188,9 @@ function install() {
     }
   }
   logger("Patches Installed\n");
+  @unlink($paths['bannerNotify']);
+  @unlink($paths['rebootNotice']);
+  
   writeJsonFile($paths['installedUpdates'],$installedUpdates);
 }
 

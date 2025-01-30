@@ -20,6 +20,7 @@ $patches = exec("/usr/bin/php $docroot".$paths['exec']." check background");
 if (trim($patches) == "No patches found" || trim($patches) == "none" || ! is_dir($paths['flash'].$unraidVersion['version']) )
   exit();
 
+touch($paths['bannerNotify']);
 exec("/usr/local/emhttp/plugins/dynamix/scripts/notify -e 'Critical Update' -s 'Critical Update Available' -d 'Critical Updates Are Available For Your Unraid Server' -i 'alert' -m 'New Criticial Updates are available for your server.  You should visit Tools / Unraid Patch to install' -l '/Tools/unraidPatch'");
 
 ?>
