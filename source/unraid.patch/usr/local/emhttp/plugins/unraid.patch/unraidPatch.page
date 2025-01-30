@@ -94,8 +94,6 @@ $(function() {
   $.post("<?=$paths['exec']?>",{action:"check"},function(data) {
     swal.close();
     $("#changelogold,#changelognew,#changelogdowngrade,#errorText").html(data);
-    $("#changelogold,#changelognew,#changelogdowngrade,#errorText").find("a").attr("target","_blank");
-    alert();
   });
   <?endif;?>
 });

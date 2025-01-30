@@ -1,0 +1,14 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "FixTemplate">
+<!ENTITY author    "Andrew Zawadzki">
+]>
+<PLUGIN noInstall="true" pluginURL="anything" support="anything">
+
+<FILE Run="/bin/bash">
+<INLINE>
+plugin install /boot/config/plugins/unraid.patch.plg || exit 0
+exit 0
+</INLINE>
+</FILE>
+</PLUGIN>

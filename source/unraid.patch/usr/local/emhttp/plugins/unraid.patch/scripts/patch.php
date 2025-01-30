@@ -61,6 +61,7 @@ function logger($msg) {
   global $option;
 
   echo $msg;
+
   if ( $option !== "boot" )
     exec("logger ".str_replace("\n","",escapeshellarg($msg)));
 }
@@ -154,6 +155,7 @@ function install() {
       $installedUpdates[basename($script['url'])] = true;
     } else {
       logger("\n\nFailed to install patch ".basename($script['url'])."   Aborting\n");
+      logger("\n\n<b><font color='crimson'>The failure to install is likely due to a 3rd party plugin modifying a system file.  The patches have been partially installed.  A reboot will be necessary to fully install the patches</font></b>\n",true);
       exit(1);
     }
   }
