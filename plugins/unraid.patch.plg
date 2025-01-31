@@ -1,15 +1,14 @@
-<?xml version='1.0' standalone='yes'?>
+<?xml version="1.0" standalone="yes"?>
 <!DOCTYPE PLUGIN [
-<!ENTITY name      "unraid.patch">
-<!ENTITY author    "Lime Technology">
-<!ENTITY version   "2025.01.31">
-<!ENTITY md5       "b57603bfde8e3de547c3523e69e9b0df">
-<!ENTITY plugdir   "/usr/local/emhttp/plugins/&name;">
-<!ENTITY github    "unraid/unraid.patch">
+<!ENTITY name "unraid.patch">
+<!ENTITY author "Lime Technology">
+<!ENTITY version "2025.01.31a">
+<!ENTITY md5 "b0e800a749042752a9eace0e49e8cd9b">
+<!ENTITY plugdir "/usr/local/emhttp/plugins/&name;">
+<!ENTITY github "unraid/unraid.patch">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/&github;/main/plugins/&name;.plg">
 ]>
-
-<PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" icon="asterisk" launch="Tools/unraidPatch">
+<PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" icon="asterisk" launch="Tools/unraidPatch" support="https://forums.unraid.net/topic/185560-unraid-patch-plugin/">
 
 <CHANGES>
 ###2025.01.31
@@ -27,8 +26,9 @@
 
 <FILE Run="/bin/bash">
 <INLINE>
+rm -f /tmp/plugins/pluginPending/AAA-UnraidPatch-BootLoader-DO_NOT_DELETE.plg
 # Remove old 'source' files
-rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2>/dev/null &#124; grep -v '&version;')
+rm -f $(ls /boot/config/plugins/&name;/&name;*.txz 2&gt;/dev/null | grep -v '&version;')
 </INLINE>
 </FILE>
 
@@ -45,6 +45,7 @@ The 'post-install' script
 -->
 <FILE Run="/bin/bash">
 <INLINE>
+cp /usr/local/emhttp/plugins/unraid.patch/extra/AAA-UnraidPatch-BootLoader-DO_NOT_DELETE.plg /boot/config/plugins/
 /usr/local/emhttp/plugins/unraid.patch/scripts/patch.php install boot
 
 ln -s /usr/local/emhttp/plugins/unraid.patch/scripts/backgroundCheck.php /etc/cron.weekly/backgroundCheck.php 
@@ -73,6 +74,8 @@ removepkg &name;-&version;-x86_64-1
 rm -rf &plugdir;
 rm -rf /usr/local/emhttp/plugins/unraid.patch/
 rm -rf /boot/config/plugins/unraid.patch/
+rm -rf /boot/config/plugins/AAA-UnraidPatch-BootLoader-DO_NOT_DELETE.plg
+rm -rf /etc/cron.weekly/backgroundCheck.php
 </INLINE>
 </FILE> 
 </PLUGIN>
