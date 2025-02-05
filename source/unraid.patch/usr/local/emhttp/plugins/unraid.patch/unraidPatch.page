@@ -13,6 +13,9 @@ Title="Unraid Patch"
  */
 
 require_once "/usr/local/emhttp/plugins/unraid.patch/include/paths.php";
+
+$updateCFG = parse_plugin_cfg("unraid.patch");
+
 $unraidVersion = parse_ini_file($paths['version']);
 
 $changes = '/boot/changes.txt';
@@ -61,13 +64,23 @@ function install() {
   openBox("/plugins/unraid.patch/scripts/install.sh","Install Patch",550,900,true,"reload");
 }
 
+function reloadPatchPlugin() {
+  alert(); 
+  window.location.reload();
+  }
 $(function() {
   caPluginUpdateCheck("unraid.patch.plg",{
       noDismiss:true,
       name:"Unraid Patch",
       debug:false,
       priority:true
+  },function(result) {
+    var result = JSON.parse(result);
+    if ( result.updateAvailable && "<?=$updateCFG['updatePlugin']?>" == "yes" ) {
+       setTimeout(function(){openPlugin("plugin update unraid.patch.plg","Auto Updating Patch Plugin","","reloadPatchPlugin","");},250);
+    }
   });
+
 
   $.cookie("patchOverrideNew","");
   <?if ( ! file_exists("/boot/config/plugins/unraid.patch/accepted") ) :?>

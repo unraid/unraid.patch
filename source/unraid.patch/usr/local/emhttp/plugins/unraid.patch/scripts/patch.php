@@ -150,14 +150,26 @@ function install() {
     }
     $baseDir = $script['dir'] ?? "/usr/local/";
 
-    passthru("/usr/bin/patch -d $baseDir -p1 -i ".escapeshellarg($filename),$exitCode);
+    logger("Attempting dry-run patch installation\n");
+    passthru("/usr/bin/patch --dry-run -d $baseDir -p1 -i ".escapeshellarg($filename),$exitCode);
     if ( ! $exitCode ) {
-      $installedUpdates[basename($script['url'])] = true;
+      logger("\n\nDry-run patch installation succeeded.  Installing patch\n\n");
+      passthru("/usr/bin/patch -d $baseDir -p1 -i ".escapeshellarg($filename),$exitCode);
+      if ( ! $exitCode ) {
+        $installedUpdates[basename($script['url'])] = true;
+      } else {
+        if ( $option !== "boot" )
+          touch($paths['rebootNotice']);
+        
+        logger("\n\nFailed to install patch ".basename($script['url'])."   Aborting\n");
+        logger("\n\n<b><font color='crimson'>A patch failed to install, it is likely that a system file was already modified by a different plugin. Please reboot the system so the patch will be applied before other plugins are installed.</font></b>\n",true);
+        exit(1);
+      }
     } else {
       if ( $option !== "boot" )
         touch($paths['rebootNotice']);
-      
-        logger("\n\nFailed to install patch ".basename($script['url'])."   Aborting\n");
+
+      logger("\n\nDry Run failed to install patch ".basename($script['url'])."   Aborting\n");
       logger("\n\n<b><font color='crimson'>A patch failed to install, it is likely that a system file was already modified by a different plugin. Please reboot the system so the patch will be applied before other plugins are installed.</font></b>\n",true);
       exit(1);
     }

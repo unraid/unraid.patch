@@ -23,7 +23,7 @@ if ( $unraidPatchRebootBanner )
 
 <script>
 <? if ( $unraidPatchRebootBanner ) :?>
-  addRebootNotice("You must reboot your server to install the patches");
+  addBannerWarning("You must reboot your server to install the patches");
 <?endif;?>
 <? if ( $unraidPatchShowBanner ) :?>
   addBannerWarning("_(Critical OS Patches Available)_ <a href='/Tools/unraidPatch' target='_same'>Install them here</a>");
