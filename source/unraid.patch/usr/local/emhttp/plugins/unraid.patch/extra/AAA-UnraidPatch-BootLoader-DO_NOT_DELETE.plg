@@ -7,7 +7,9 @@
 
 <FILE Run="/bin/bash">
 <INLINE>
-plugin install /boot/config/plugins/unraid.patch.plg || exit 0
+cp /tmp/inline.sh /tmp/inline.save
+plugin install /boot/config/plugins/unraid.patch.plg || cp /tmp/inline.save /tmp/inline.sh ; exit 0
+cp /tmp/inline.save /tmp/inline.sh
 exit 0
 </INLINE>
 </FILE>
